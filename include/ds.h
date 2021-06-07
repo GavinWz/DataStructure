@@ -170,7 +170,7 @@ namespace my{
         }
 
         //插入：在下标为index的节点后插入元素
-        void insert_at_index(LinkList& head, int index, int value){
+        bool insert_at_index(LinkList& head, int index, int value){
             LinkList p = head->next;
             int i = 0;
             while(i < index && p->next != NULL){
@@ -179,24 +179,25 @@ namespace my{
             }
             if(i != index){
                 cout << "输入下标过大" << endl;
-                return;
+                return false;
             }
             LinkListNode* temp = new LinkListNode;
             temp->value = value;
             temp->next = p->next;
             p->next = temp;
+            return true;
         }
 
         //插入：在第num个节点后插入元素
-        void insert_at_num(LinkList& head, int num, int value){
-            insert_at_index(head, num - 1, value);
+        bool insert_at_num(LinkList& head, int num, int value){
+            return insert_at_index(head, num - 1, value);
         }
 
         //删除：删除下标为index的元素
-        void del_at_index(LinkList& head, int index){
+        bool del_at_index(LinkList& head, int index){
             if(head->next == NULL){
                 cout << "链表为空" << endl;
-                return;
+                return false;
             }
             LinkList p = head;
             int i = 0;
@@ -206,16 +207,17 @@ namespace my{
             }
             if(i != index){
                 cout << "输入下标过大" << endl;
-                return;
+                return false;
             }
             LinkListNode* q = p->next;
             p->next = q->next;
             free(q);
+            return true;
         }
 
         //删除：删除第num个元素
-        void del_at_num(LinkList& head, int num){
-            del_at_index(head, num - 1);
+        bool del_at_num(LinkList& head, int num){
+            return del_at_index(head, num - 1);
         }
     }
 
@@ -233,12 +235,13 @@ namespace my{
         }
         
         //入栈
-        void push(ArrayStack &stack, int value){
+        bool push(ArrayStack &stack, int value){
             if(stack.top >= MaxSize - 1){
                 cout << "栈已满" << endl;
-                return;
+                return false;
             }
             stack.data[++stack.top] = value;
+            return true;
         }
 
         //出栈
@@ -248,7 +251,6 @@ namespace my{
                 return INT_MAX;
             }
             return stack.data[stack.top--];
-            
         }
 
         //获取栈顶元素
@@ -342,15 +344,16 @@ namespace my{
         }
 
         //入栈
-        void push(SharedStack &stack, int value, bool which = 0){
+        bool push(SharedStack &stack, int value, bool which = 0){
             if(stack.top[0] + 1 == stack.top[1]){
                 cout << "栈满" << endl;
-                return;
+                return false;
             }
             if(which == 0)
                 stack.data[++stack.top[which]] = value;
             else
                 stack.data[--stack.top[which]] = value;
+            return true;
         }
 
         //出栈
@@ -378,5 +381,118 @@ namespace my{
             }
             return stack.data[stack.top[which]];
         }
+    }
+
+    namespace circular_queue{
+    /*
+        此处为牺牲一个单元来区分队空和队满的情况
+        另有设置tag判断空满的方法。见p80-1.cpp
+    */
+
+        struct CircularQueue{
+            int data[MaxSize];
+            int front, rear;
+        };
+        
+        void init(CircularQueue &queue){
+            queue.front = queue.rear = 0;
+        }
+
+        bool enter(CircularQueue &queue, int x){
+            if(queue.front == (queue.rear+1) % MaxSize){
+                cout << "队满" << endl;
+                return false;
+            }
+            queue.data[queue.rear] = x;
+            queue.rear = (queue.rear + 1) % MaxSize;
+            return true;
+        }
+
+        int quit(CircularQueue &queue){
+            if(queue.front == queue.rear){
+                cout << "队空" << endl;
+                return INT_MAX;
+            }
+            int result = queue.data[queue.front];
+            queue.front = (queue.front + 1) % MaxSize;
+            return result;
+        }
+
+        bool is_empty(CircularQueue queue){
+            if(queue.front == queue.rear){
+                return true;
+            }
+            return false;
+        }
+    }
+
+    namespace link_queue{
+
+        //队列的链式存储，头指针出队，尾指针入队
+        struct QueueNode{
+            int data;
+            QueueNode *next;
+        };
+        struct LinkQueue{
+            QueueNode *front, *rear;
+        };
+
+        //队列初始化
+        void init(LinkQueue &queue){
+            queue.front = new QueueNode;
+            queue.front->next = NULL;
+            queue.rear = queue.front;
+        }
+
+        //入队
+        bool enter(LinkQueue &queue, int x){
+            QueueNode* temp;
+            if(!(temp= new QueueNode))
+                return false;
+            temp->data = x;
+            temp->next = NULL;
+            queue.rear->next = temp;
+            queue.rear = temp;
+            return true;
+        }
+
+        //出队
+        int quit(LinkQueue &queue){
+            if(queue.front == queue.rear){
+                cout << "队空" << endl;
+                return INT_MAX;
+            }
+            QueueNode* temp = queue.front->next;
+            int result = temp->data;
+            queue.front->next= temp->next;
+            if(queue.rear == temp){
+                queue.rear = queue.front;
+            }
+            free(temp);
+            return result;  
+        }
+
+        //判断队空
+        bool is_empty(LinkQueue &queue){
+            if(queue.front == queue.rear){
+                return true;
+            }
+            return false;
+        }
+
+        //清除队列中的所有元素
+        void clear(LinkQueue &queue){
+            while(!is_empty(queue))
+                cout << quit(queue) << endl;
+        }
+    }
+
+    namespace bin_tree{
+        typedef struct BinTreeNode{
+            int data;
+            BinTreeNode* left;
+            BinTreeNode* right;
+        }* BinTree;
+
     }
 }
