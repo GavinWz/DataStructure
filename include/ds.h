@@ -426,28 +426,35 @@ namespace my{
         }
     }
 
+    
     namespace link_queue{
 
         //队列的链式存储，头指针出队，尾指针入队
+        
+        template<class T>
         struct QueueNode{
-            int data;
+            T data;
             QueueNode *next;
         };
+
+        template<class T>   
         struct LinkQueue{
-            QueueNode *front, *rear;
+            QueueNode<T> *front, *rear;
         };
 
         //队列初始化
-        void init(LinkQueue &queue){
-            queue.front = new QueueNode;
+        template<class T>
+        void init(LinkQueue<T> &queue){
+            queue.front = new QueueNode<T>;
             queue.front->next = NULL;
             queue.rear = queue.front;
         }
 
         //入队
-        bool enter(LinkQueue &queue, int x){
-            QueueNode* temp;
-            if(!(temp= new QueueNode))
+        template<class T>
+        bool enter(LinkQueue<T> &queue, T x){
+            QueueNode<T>* temp;
+            if(!(temp= new QueueNode<T>))
                 return false;
             temp->data = x;
             temp->next = NULL;
@@ -457,13 +464,14 @@ namespace my{
         }
 
         //出队
-        int quit(LinkQueue &queue){
+        template<class T>
+        T quit(LinkQueue<T> &queue){
             if(queue.front == queue.rear){
                 cout << "队空" << endl;
-                return INT_MAX;
+                return NULL;
             }
-            QueueNode* temp = queue.front->next;
-            int result = temp->data;
+            QueueNode<T>* temp = queue.front->next;
+            T result = temp->data;
             queue.front->next= temp->next;
             if(queue.rear == temp){
                 queue.rear = queue.front;
@@ -473,7 +481,8 @@ namespace my{
         }
 
         //判断队空
-        bool is_empty(LinkQueue &queue){
+        template<class T>
+        bool is_empty(LinkQueue<T> &queue){
             if(queue.front == queue.rear){
                 return true;
             }
@@ -481,18 +490,10 @@ namespace my{
         }
 
         //清除队列中的所有元素
-        void clear(LinkQueue &queue){
+        template<class T>
+        void clear(LinkQueue<T> &queue){
             while(!is_empty(queue))
                 cout << quit(queue) << endl;
         }
-    }
-
-    namespace bin_tree{
-        typedef struct BinTreeNode{
-            int data;
-            BinTreeNode* left;
-            BinTreeNode* right;
-        }* BinTree;
-
     }
 }
