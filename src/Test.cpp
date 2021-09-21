@@ -1,14 +1,9 @@
-#include "../include/ds.h"
-#include<stdlib.h>
-using namespace my::link_queue;
+#include "../include/bi_tree.h"
 
 
 int main(){
-    LinkQueue queue;
-    init(queue);
-    enter(queue, 2);
-    enter(queue, 3);
-    clear(queue);
-    cout << my::link_queue::is_empty(queue);
-
+    BiTreeNode<int>*root = nullptr;
+    root->sort_init(&root);
+    root->in_order(root);
+    // root->level_order(root);
 }
