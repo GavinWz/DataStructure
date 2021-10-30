@@ -221,6 +221,41 @@ namespace my{
         }
     }
 
+    namespace dual_link{
+        typedef struct Node{
+            int value;
+            struct Node* front;
+            struct Node* next;
+        }*DualLink;
+
+        void init_head_insert(DualLink &head){
+            head = new Node;
+            head->front = NULL;
+            head->next = NULL;
+            int value;
+            cout << "输入数据，以回车分割，输入9999结束" << endl;
+            while(cin >> value && value != 9999){
+                DualLink new_node = new Node;
+                new_node->value = value;
+                new_node->next = head->next;
+                new_node->front = head;
+                if(head->next)
+                    head->next->front = new_node;
+            
+                head->next = new_node;
+            }
+        }
+
+        void output(DualLink head){
+            DualLink p = head->next;
+            while(p){
+                cout << p->value << " ";
+                p = p->next;
+            }
+        }
+    }
+
+
     namespace array_stack{
         
         typedef struct
