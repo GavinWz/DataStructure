@@ -221,6 +221,17 @@ namespace my{
         }
     }
 
+    namespace none_head_link_list{
+        typedef struct LinkListNode{
+            int value;
+            LinkListNode *next;
+        }* LinkList;
+        
+        void append(LinkList &list, int data){
+            
+        }
+    }
+
     namespace dual_link{
         typedef struct Node{
             int value;
